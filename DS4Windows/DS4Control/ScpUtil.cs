@@ -1876,14 +1876,11 @@ namespace DS4Windows
             set => m_Config.absDisplayEDID = value;
         }
 
-        public static int DebouncingMs
+        public static int[] DebouncingMs => m_Config.debouncingMs;
+
+        public static void DebouncingMsHasChanged()
         {
-            get => m_Config.debouncingMs;
-            set
-            {
-                m_Config.debouncingMs = value;
-                DebouncingMsChanged?.Invoke(typeof(Global), EventArgs.Empty);
-            }
+            DebouncingMsChanged.Invoke(typeof(Global), EventArgs.Empty);
         }
 
         public static event EventHandler DebouncingMsChanged;
@@ -3695,7 +3692,10 @@ namespace DS4Windows
         public string fakeExeFileName = string.Empty;
         public string absDisplayEDID = string.Empty;
 
-        public int debouncingMs = 0;
+        public int[] debouncingMs = new int[Global.TEST_PROFILE_ITEM_COUNT]
+        {
+            0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
 
         public ControlServiceDeviceOptions deviceOptions =
             new ControlServiceDeviceOptions();

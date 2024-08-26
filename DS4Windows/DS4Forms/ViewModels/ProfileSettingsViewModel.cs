@@ -406,12 +406,22 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             set => Global.LightbarSettingsInfo[device].ds4winSettings.maxRainbowSat = value / 100.0;
         }
 
+        public bool HasDebouncingMsChanged { get; private set; }
+
         public int DebouncingMs
         {
-            get => Global.DebouncingMs;
+            get => Global.DebouncingMs[device];
             set
             {
-                Global.DebouncingMs = value;
+                if (Global.DebouncingMs[device] != value)
+                {
+                    HasDebouncingMsChanged = true;
+                }
+                else
+                {
+                    HasDebouncingMsChanged = false;
+                }
+                Global.DebouncingMs[device] = value;
                 DebouncingMsChanged?.Invoke(this, EventArgs.Empty);
             }
         }

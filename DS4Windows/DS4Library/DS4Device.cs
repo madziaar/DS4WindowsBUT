@@ -1545,7 +1545,7 @@ namespace DS4Windows
 
         protected Debouncer SetupDebouncer()
         {
-            var debouncingMs = TimeSpan.FromMilliseconds(Global.DebouncingMs);
+            var debouncingMs = TimeSpan.FromMilliseconds(Global.DebouncingMs[deviceSlotNumber]);
             Debouncer debouncer = new(debouncingMs);
             debouncer.AddDebouncer(nameof(DS4State.Cross));
             debouncer.AddDebouncer(nameof(DS4State.Triangle));
@@ -1563,7 +1563,7 @@ namespace DS4Windows
             debouncer.AddDebouncer(nameof(DS4State.TouchButton));
             Global.DebouncingMsChanged += (_, _) =>
             {
-                debouncer.SetDuration(TimeSpan.FromMilliseconds(Global.DebouncingMs));
+                debouncer.SetDuration(TimeSpan.FromMilliseconds(Global.DebouncingMs[deviceSlotNumber]));
             };
             return debouncer;
         }

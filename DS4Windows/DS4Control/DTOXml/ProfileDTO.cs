@@ -1441,7 +1441,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
             LightbarMode = source.lightbarSettingInfo[deviceIndex].mode;
             ColorString = $"{lightInfo.m_Led.red},{lightInfo.m_Led.green},{lightInfo.m_Led.blue}";
             _ledColor = new DS4Color(lightInfo.m_Led.red, lightInfo.m_Led.green, lightInfo.m_Led.blue);
-            DebouncingMs = source.debouncingMs;
+            DebouncingMs = source.debouncingMs[deviceIndex];
             RumbleBoost = source.rumble[deviceIndex];
             RumbleAutostopTime = source.rumbleAutostopTime[deviceIndex];
             LedAsBatteryIndicator = lightInfo.ledAsBattery;
@@ -1948,7 +1948,7 @@ namespace DS4WinWPF.DS4Control.DTOXml
             destination.lightbarSettingInfo[deviceIndex].mode = LightbarMode;
             lightInfo.m_Led = _ledColor;
 
-            destination.debouncingMs = DebouncingMs;
+            destination.debouncingMs[deviceIndex] = DebouncingMs;
             destination.rumble[deviceIndex] = RumbleBoost;
             destination.rumbleAutostopTime[deviceIndex] = RumbleAutostopTime;
             lightInfo.ledAsBattery = LedAsBatteryIndicator;

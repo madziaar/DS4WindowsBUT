@@ -911,6 +911,11 @@ namespace DS4WinWPF.DS4Forms
                 App.rootHub.setRumble(0, 0, profileSettingsVM.FuncDevNum);
             }
 
+            if (profileSettingsVM.HasDebouncingMsChanged)
+            {
+                Global.DebouncingMsHasChanged();
+            }
+
             string temp = profileNameTxt.Text;
             if (!string.IsNullOrWhiteSpace(temp) &&
                 temp.IndexOfAny(System.IO.Path.GetInvalidFileNameChars()) == -1)
