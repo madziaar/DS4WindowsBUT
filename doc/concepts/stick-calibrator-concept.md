@@ -11,7 +11,7 @@ stick's center.
 
 #### Implementation
 Implementation of this method should be as simple as:
-- finding out the amount of bits the stick drifts by
+- finding out the amount of units the stick drifts by
 - subtracting/adding that amount to the raw input
 - making sure the value doesnt fall outside the 0-255 range
 
@@ -20,7 +20,7 @@ Implementing this would mean that the side opposite to the one in which the stic
 slight deadzone at one end and would never go to the full value at the other end. The example would be:
 
 We find out that the stick in its physically centered state has X axis reading of 132. This means that it drifts by +5 
-bits, which in turn means that it's aligned slightly to the right. To counteract that, we subtract 5 bits from the X 
+units, which in turn means that it's aligned slightly to the right. To counteract that, we subtract 5 units from the X 
 axis reading.
 
 If we move the stick fully to the left, the value of the axis is 0 (-5, but it falls out of range of 0-255, so 
@@ -37,7 +37,7 @@ so that we avoid having deadzones or unreachable values on either side.
 
 #### Implementation
 Implementation of this method should be slightly more complicated than that of window shrinking. It would involve:
-- finding out the amount of bits the stick drifts by
+- finding out the amount of units the stick drifts by
 - the raw value of 127 + drift amount should translate to 127
 - calculate 2 coefficients for each side the stick can move in (ranges of `<0; (127 + drift value))` and 
 `((127 + drift value); 255>`)
@@ -50,7 +50,7 @@ the stick drift should never be so big that it becomes a problem or even noticab
 
 ## Pros and cons of each option
 The first option should work fairly well in most of the cases given the stick drift is not too big. If it's only a few 
-bits that it drifts by, the deadzone at the _shorter_ side and lack of the top end at the _longer_ side should not 
+units that it drifts by, the deadzone at the _shorter_ side and lack of the top end at the _longer_ side should not 
 even be noticable. It's also easier to implement, as it only involves checking the amount by which the stick drifts 
 and then making simple addition/subtraction operations.
 
