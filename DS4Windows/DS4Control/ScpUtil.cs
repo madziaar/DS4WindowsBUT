@@ -1876,6 +1876,11 @@ namespace DS4Windows
             set => m_Config.absDisplayEDID = value;
         }
 
+        public static sbyte[] RightStickDriftXAxis => m_Config.rightStickDriftXAxis;
+        public static sbyte[] RightStickDriftYAxis => m_Config.rightStickDriftYAxis;
+        public static sbyte[] LeftStickDriftXAxis => m_Config.leftStickDriftXAxis;
+        public static sbyte[] LeftStickDriftYAxis => m_Config.leftStickDriftYAxis;
+
         public static int[] DebouncingMs => m_Config.debouncingMs;
 
         public static void DebouncingMsHasChanged()
@@ -3691,6 +3696,23 @@ namespace DS4Windows
         public AppThemeChoice useCurrentTheme;
         public string fakeExeFileName = string.Empty;
         public string absDisplayEDID = string.Empty;
+
+        public sbyte[] leftStickDriftXAxis = new sbyte[Global.TEST_PROFILE_ITEM_COUNT]
+        {
+            0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
+        public sbyte[] leftStickDriftYAxis = new sbyte[Global.TEST_PROFILE_ITEM_COUNT]
+        {
+            0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
+        public sbyte[] rightStickDriftXAxis = new sbyte[Global.TEST_PROFILE_ITEM_COUNT]
+        {
+            0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
+        public sbyte[] rightStickDriftYAxis = new sbyte[Global.TEST_PROFILE_ITEM_COUNT]
+        {
+            0, 0, 0, 0, 0, 0, 0, 0, 0
+        };
 
         public int[] debouncingMs = new int[Global.TEST_PROFILE_ITEM_COUNT]
         {

@@ -1134,6 +1134,9 @@ namespace DS4Windows
             cState.CopyTo(dState);
             //DS4State dState = new DS4State(cState);
 
+            cState = ApplyStickCalibration(device, dState);
+
+
             if (lsMod.deadzoneType == StickDeadZoneInfo.DeadZoneType.Radial)
             {
                 int lsDeadzone = lsMod.deadZone;
@@ -2283,6 +2286,34 @@ namespace DS4Windows
             }
 
             return dState;
+        }
+
+        public static DS4State ApplyStickCalibration(int device, DS4State state)
+        {
+            if (RightStickDriftXAxis[device] != 0)
+            {
+                var translated = state.RX - RightStickDriftXAxis[device];
+                state.RX = (byte)Math.Clamp(translated, 0, 255);
+            }
+            if (RightStickDriftYAxis[device] != 0)
+            {
+                var translated = state.RY - RightStickDriftYAxis[device];
+                state.RY = (byte)Math.Clamp(translated, 0, 255);
+            }
+
+            if (LeftStickDriftXAxis[device] != 0)
+            {
+                var translated = state.LX - LeftStickDriftXAxis[device];
+                state.LX = (byte)Math.Clamp(translated, 0, 255);
+            }
+
+            if (LeftStickDriftYAxis[device] != 0)
+            {
+                var translated = state.LY - LeftStickDriftYAxis[device];
+                state.LY = (byte)Math.Clamp(translated, 0, 255);
+            }
+
+            return state;
         }
 
         private static bool ShiftTrigger(int trigger, int device, DS4State cState, DS4StateExposed eState, Mouse tp, DS4StateFieldMapping fieldMapping)

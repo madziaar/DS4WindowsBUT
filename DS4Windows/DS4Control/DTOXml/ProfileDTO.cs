@@ -128,6 +128,30 @@ namespace DS4WinWPF.DS4Control.DTOXml
             get; set;
         }
 
+        [XmlElement("LeftStickDriftXAxis")]
+        public sbyte LeftStickDriftXAxis
+        {
+            get; set;
+        }
+
+        [XmlElement("LeftStickDriftYAxis")]
+        public sbyte LeftStickDriftYAxis
+        {
+            get; set;
+        }
+
+        [XmlElement("RightStickDriftXAxis")]
+        public sbyte RightStickDriftXAxis
+        {
+            get; set;
+        }
+
+        [XmlElement("RightStickDriftYAxis")]
+        public sbyte RightStickDriftYAxis
+        {
+            get; set;
+        }
+
         [XmlElement("DebouncingMs")]
         public int DebouncingMs
         {
@@ -1441,6 +1465,10 @@ namespace DS4WinWPF.DS4Control.DTOXml
             LightbarMode = source.lightbarSettingInfo[deviceIndex].mode;
             ColorString = $"{lightInfo.m_Led.red},{lightInfo.m_Led.green},{lightInfo.m_Led.blue}";
             _ledColor = new DS4Color(lightInfo.m_Led.red, lightInfo.m_Led.green, lightInfo.m_Led.blue);
+            LeftStickDriftXAxis = source.leftStickDriftXAxis[deviceIndex];
+            LeftStickDriftYAxis = source.leftStickDriftYAxis[deviceIndex];
+            RightStickDriftXAxis = source.rightStickDriftXAxis[deviceIndex];
+            RightStickDriftYAxis = source.rightStickDriftYAxis[deviceIndex];
             DebouncingMs = source.debouncingMs[deviceIndex];
             RumbleBoost = source.rumble[deviceIndex];
             RumbleAutostopTime = source.rumbleAutostopTime[deviceIndex];
@@ -1947,6 +1975,11 @@ namespace DS4WinWPF.DS4Control.DTOXml
             destination.enableOutputDataToDS4[deviceIndex] = OutputDataToDS4;
             destination.lightbarSettingInfo[deviceIndex].mode = LightbarMode;
             lightInfo.m_Led = _ledColor;
+
+            destination.leftStickDriftXAxis[deviceIndex] = LeftStickDriftXAxis;
+            destination.leftStickDriftYAxis[deviceIndex] = LeftStickDriftYAxis;
+            destination.rightStickDriftXAxis[deviceIndex] = RightStickDriftXAxis;
+            destination.rightStickDriftYAxis[deviceIndex] = RightStickDriftYAxis;
 
             destination.debouncingMs[deviceIndex] = DebouncingMs;
             destination.rumble[deviceIndex] = RumbleBoost;
