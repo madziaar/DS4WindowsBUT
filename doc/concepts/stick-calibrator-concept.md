@@ -31,7 +31,7 @@ to 250.
 
 
 ### Scaling
-Other one would be to translate the stick input so that the full window of motion is used, but the input is scaled, 
+Another way would be to translate the stick input so that the full window of motion is used, but the input is scaled, 
 so that the full range of motion is used (0-255). We would use different coefficients for each side the stick moves in,
 so that we avoid having deadzones or unreachable values on either side.
 
@@ -65,5 +65,5 @@ performing a lookup rather than calculating the value in real time might be a go
 - The window should prompt the user to move the stick determine the physical centered state of the stick by e.g.
 flicking it in a few different directions and letting it recenter itself
 - The drift values in both axes should be calculated and then saved to a config file
-- Appropriate translations should be performed **before any other input manipulation (any settings in the `Axis Config
+- Appropriate translations should be performed **before any other input manipulation (any settings in the `Axis Config`
 tab, like deadzone, sensitivity, etc.)**  
