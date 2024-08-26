@@ -54,8 +54,10 @@ bits that it drifts by, the deadzone at the _shorter_ side and lack of the top e
 even be noticable. It's also easier to implement, as it only involves checking the amount by which the stick drifts 
 and then making simple addition/subtraction operations.
 
-The second option will add a bit of CPU overhead, but will ensure that the output stick value range of 0-255 remains
+The second option will ensure that the output stick value range of 0-255 remains
 intact. It might be better for more severe cases of drift, or where the lack of that top-end value would be a problem.
+It might add a bit of CPU overhead, however pre-calculating the values and saving them to a Dictionary, and then just
+performing a lookup rather than calculating the value in real time might be a good consideration.
 
 ## Real world implementation
 - In profile settings, in the `Axis Config` tab, create an option to open a calibration tool. 
