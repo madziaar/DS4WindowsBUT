@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using DS4Windows;
 
 namespace DS4WinWPF.DS4Forms;
@@ -22,18 +23,41 @@ public partial class StickCalibrationWindow : Window
 
     private void SaveButton_OnClick(object sender, RoutedEventArgs e)
     {
-        // TODO consider what happens if stick is recalibrated and we recalibrate it again
         var state = App.rootHub.getDS4State(_device);
-        switch (_stick)
+
+        if (_stick == Stick.Left)
         {
-            case Stick.Left:
-                MessageBox.Show($"LX: {state.LX} LY: {state.LY}",
-                    "DS4Windows", MessageBoxButton.OK, MessageBoxImage.Information);
-                break;
-            case Stick.Right:
-                MessageBox.Show($"RX: {state.RX} RY: {state.RY}",
-                    "DS4Windows", MessageBoxButton.OK, MessageBoxImage.Information);
-                break;
+            var xAxisDrift = state.LX - 127;
+            var yAxisDrift = state.LY - 127;
+            if (xAxisDrift != 0)
+            {
+                Global.LeftStickDriftXAxis[_device] = Convert.ToSByte(xAxisDrift);
+            }
+            if (yAxisDrift != 0)
+            {
+                Global.LeftStickDriftYAxis[_device] = Convert.ToSByte(yAxisDrift);
+            }
+            MessageBox.Show($"Detected drift:\nX axis: {xAxisDrift}, Y axis: {yAxisDrift}",
+                "DS4Windows", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        if (_stick == Stick.Right)
+        {
+            var xAxisDrift = state.RX - 127;
+            var yAxisDrift = state.RY - 127;
+
+            if (xAxisDrift != 0)
+            {
+                Global.RightStickDriftXAxis[_device] = Convert.ToSByte(xAxisDrift);
+            }
+
+            if (yAxisDrift != 0)
+            {
+                Global.RightStickDriftYAxis[_device] = Convert.ToSByte(yAxisDrift);
+            }
+
+            MessageBox.Show($"Detected drift:\nX axis: {xAxisDrift}, Y axis: {yAxisDrift}",
+                "DS4Windows", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         Close();
