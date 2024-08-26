@@ -272,7 +272,8 @@
                                     <TabItem Header="{lex:Loc Controls}" Visibility="Collapsed">
                                         <DockPanel>
                                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0 4 0 4">
-                                                <Button Content="Recalibrate stick" Click="CalibrateStick_OnClick" />
+                                                <Button Content="Recalibrate stick" Click="CalibrateStick_OnClick"
+                                                        Tag="0" />
                                             </StackPanel>
 
                                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
@@ -563,6 +564,11 @@
                                     <TabItem Header="{lex:Loc None}"  Visibility="Collapsed" />
                                     <TabItem Header="{lex:Loc Controls}" Visibility="Collapsed">
                                         <DockPanel LastChildFill="False">
+                                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0 4 0 4">
+                                                <Button Content="Recalibrate stick" Click="CalibrateStick_OnClick"
+                                                        Tag="1" />
+                                            </StackPanel>
+
                                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                                                 <Label Content="{lex:Loc DeadZoneType}" />
                                                 <ComboBox MinWidth="160" SelectedIndex="{Binding RSDeadTypeIndex,FallbackValue='0'}" VerticalContentAlignment="Center" Margin="10,0,0,0">

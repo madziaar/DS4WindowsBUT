@@ -375,8 +375,8 @@
   <ItemGroup>
     <Folder Remove="extras\" />
   </ItemGroup>
-<!--TODO automatise the python lang script-->
+<!--TODO automate the python lang script-->
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="rem Copy compiled l18n assemblies to alt folder&#xA;if not exist $(TargetDir)Lang mkdir $(TargetDir)Lang&#xA;set langs=ar cs de el es fi fr he hu-HU idn it ja ms nl pl pt pt-BR ru se tr uk-UA vi zh-Hans zh-Hant zh-CN&#xA;&#xA;for %25%25l in (%25langs%25) do (&#xA;  xcopy $(TargetDir)%25%25l $(TargetDir)Lang\%25%25l\ /s /y&#xA;  rd /s /q &quot;$(TargetDir)%%l&quot;&#xA;)&#xA;&#xA;echo $(Version)&gt; $(ProjectDir)\newest.txt&#xA;" />
+    <Exec Command="rem Copy compiled l18n assemblies to alt folder&#xA;GOTO END&#xA;if not exist $(TargetDir)Lang mkdir $(TargetDir)Lang&#xA;set langs=ar cs de el es fi fr he hu-HU idn it ja ms nl pl pt pt-BR ru se tr uk-UA vi zh-Hans zh-Hant zh-CN&#xA;&#xA;for %25%25l in (%25langs%25) do (&#xA;  xcopy $(TargetDir)%25%25l $(TargetDir)Lang\%25%25l\ /s /y&#xA;  rd /s /q &quot;$(TargetDir)%%l&quot;&#xA;)&#xA;&#xA;echo $(Version)&gt; $(ProjectDir)\newest.txt&#xA;:END" />
   </Target>
 </Project>

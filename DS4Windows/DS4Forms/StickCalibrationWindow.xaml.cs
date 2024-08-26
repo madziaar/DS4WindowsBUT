@@ -1,21 +1,18 @@
 ﻿using System.Windows;
+using DS4Windows;
 
 namespace DS4WinWPF.DS4Forms;
 
 public partial class StickCalibrationWindow : Window
 {
-    public StickCalibrationWindow()
+    private Stick _stick;
+    private int _device;
+
+    public StickCalibrationWindow(Stick stick, int device)
     {
+        _stick = stick;
+        _device = device;
         InitializeComponent();
-    }
-
-    public static readonly DependencyProperty StickProperty =
-        DependencyProperty.Register(nameof(Stick), typeof(Stick), typeof(StickCalibrationWindow));
-
-    public Stick Stick
-    {
-        get => (Stick)GetValue(StickProperty);
-        set => SetValue(StickProperty, value);
     }
 
     private void CloseButton_OnClick(object sender, RoutedEventArgs e)
@@ -25,6 +22,19 @@ public partial class StickCalibrationWindow : Window
 
     private void SaveButton_OnClick(object sender, RoutedEventArgs e)
     {
+        // TODO consider what happens if stick is recalibrated and we recalibrate it again
+        var state = App.rootHub.getDS4State(_device);
+        switch (_stick)
+        {
+            case Stick.Left:
+                MessageBox.Show($"LX: {state.LX} LY: {state.LY}",
+                    "DS4Windows", MessageBoxButton.OK, MessageBoxImage.Information);
+                break;
+            case Stick.Right:
+                MessageBox.Show($"RX: {state.RX} RY: {state.RY}",
+                    "DS4Windows", MessageBoxButton.OK, MessageBoxImage.Information);
+                break;
+        }
 
         Close();
     }

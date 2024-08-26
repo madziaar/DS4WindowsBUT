@@ -1699,8 +1699,28 @@ namespace DS4WinWPF.DS4Forms
 
         private void CalibrateStick_OnClick(object sender, RoutedEventArgs e)
         {
-            // TODO check if any device is connected
-            StickCalibrationWindow window = new();
+            if (deviceNum == 8)
+            {
+                MessageBox.Show("Stick recalibration is only available if the profile editor is opened " +
+                                "with the Edit button next to the controller you want to recalibrate in the main " +
+                                "window.",
+                    "DS4Windows", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var button = sender as Button;
+            var tag = Convert.ToInt32(button?.Tag);
+            var stick = tag switch
+            {
+                0 => Stick.Left,
+                1 => Stick.Right,
+                _ => throw new IndexOutOfRangeException("Wrong stick index. Must be 0 for left or 1 for right.")
+            };
+
+            StickCalibrationWindow window = new(stick, deviceNum)
+            {
+                Owner = Application.Current.MainWindow,
+            };
             window.ShowDialog();
         }
     }
