@@ -1717,7 +1717,7 @@ namespace DS4WinWPF.DS4Forms
                 _ => throw new IndexOutOfRangeException("Wrong stick index. Must be 0 for left or 1 for right.")
             };
 
-            StickCalibrationWindow window = new(stick, deviceNum)
+            StickCalibrationWindow window = new(stick, deviceNum, profileSettingsVM)
             {
                 Owner = Application.Current.MainWindow,
             };

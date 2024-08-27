@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using DS4Windows;
+using DS4WinWPF.DS4Forms.ViewModels;
 
 namespace DS4WinWPF.DS4Forms;
 
@@ -8,11 +9,13 @@ public partial class StickCalibrationWindow : Window
 {
     private Stick _stick;
     private int _device;
+    private ProfileSettingsViewModel _profileSettingsVM;
 
-    public StickCalibrationWindow(Stick stick, int device)
+    public StickCalibrationWindow(Stick stick, int device, ProfileSettingsViewModel profileSettingsVm)
     {
         _stick = stick;
         _device = device;
+        _profileSettingsVM = profileSettingsVm;
         InitializeComponent();
     }
 
@@ -31,11 +34,11 @@ public partial class StickCalibrationWindow : Window
             var yAxisDrift = state.LY - 127;
             if (xAxisDrift != 0)
             {
-                Global.LeftStickDriftXAxis[_device] = Convert.ToSByte(xAxisDrift);
+                _profileSettingsVM.LeftStickDriftXAxis = Convert.ToSByte(xAxisDrift);
             }
             if (yAxisDrift != 0)
             {
-                Global.LeftStickDriftYAxis[_device] = Convert.ToSByte(yAxisDrift);
+                _profileSettingsVM.LeftStickDriftYAxis = Convert.ToSByte(yAxisDrift);
             }
             MessageBox.Show($"Detected drift:\nX axis: {xAxisDrift}, Y axis: {yAxisDrift}",
                 "DS4Windows", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -48,12 +51,12 @@ public partial class StickCalibrationWindow : Window
 
             if (xAxisDrift != 0)
             {
-                Global.RightStickDriftXAxis[_device] = Convert.ToSByte(xAxisDrift);
+                _profileSettingsVM.RightStickDriftXAxis = Convert.ToSByte(xAxisDrift);
             }
 
             if (yAxisDrift != 0)
             {
-                Global.RightStickDriftYAxis[_device] = Convert.ToSByte(yAxisDrift);
+                _profileSettingsVM.RightStickDriftYAxis = Convert.ToSByte(yAxisDrift);
             }
 
             MessageBox.Show($"Detected drift:\nX axis: {xAxisDrift}, Y axis: {yAxisDrift}",

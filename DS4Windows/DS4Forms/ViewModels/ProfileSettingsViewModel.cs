@@ -406,6 +406,54 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             set => Global.LightbarSettingsInfo[device].ds4winSettings.maxRainbowSat = value / 100.0;
         }
 
+        public sbyte LeftStickDriftXAxis
+        {
+            get => Global.LeftStickDriftXAxis[device];
+            set
+            {
+                Global.LeftStickDriftXAxis[device] = value;
+                LeftStickDriftXAxisChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler LeftStickDriftXAxisChanged;
+
+        public sbyte LeftStickDriftYAxis
+        {
+            get => Global.LeftStickDriftYAxis[device];
+            set
+            {
+                Global.LeftStickDriftYAxis[device] = value;
+                LeftStickDriftYAxisChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler LeftStickDriftYAxisChanged;
+
+        public sbyte RightStickDriftXAxis
+        {
+            get => Global.RightStickDriftXAxis[device];
+            set
+            {
+                Global.RightStickDriftXAxis[device] = value;
+                RightStickDriftXAxisChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler RightStickDriftXAxisChanged;
+
+        public sbyte RightStickDriftYAxis
+        {
+            get => Global.RightStickDriftYAxis[device];
+            set
+            {
+                Global.RightStickDriftYAxis[device] = value;
+                RightStickDriftYAxisChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler RightStickDriftYAxisChanged;
+
         public bool HasDebouncingMsChanged { get; private set; }
 
         public int DebouncingMs

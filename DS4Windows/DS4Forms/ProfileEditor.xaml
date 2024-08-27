@@ -271,11 +271,6 @@
                                     <TabItem Header="{lex:Loc None}"  Visibility="Collapsed" />
                                     <TabItem Header="{lex:Loc Controls}" Visibility="Collapsed">
                                         <DockPanel>
-                                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0 4 0 4">
-                                                <Button Content="Recalibrate stick" Click="CalibrateStick_OnClick"
-                                                        Tag="0" />
-                                            </StackPanel>
-
                                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                                                 <Label Content="{lex:Loc DeadZoneType}" />
                                                 <ComboBox MinWidth="160" SelectedIndex="{Binding LSDeadTypeIndex,FallbackValue='0'}" VerticalContentAlignment="Center" Margin="10,0,0,0">
@@ -358,6 +353,10 @@
                                                     <RowDefinition Style="{StaticResource gridRowHeight}" />
                                                     <RowDefinition Style="{StaticResource gridRowHeight}" />
                                                     <RowDefinition Style="{StaticResource gridRowHeight}" />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
                                                     <RowDefinition />
                                                     <RowDefinition />
                                                 </Grid.RowDefinitions>
@@ -448,6 +447,23 @@
                                                        Margin="{StaticResource spaceMargin}" ToolTip="{lex:Loc StickOuterBindDeadTooltip}" DockPanel.Dock="Top" />
                                                     <CheckBox Content="Invert" IsChecked="{Binding LSOuterBindInvert}" ToolTip="{lex:Loc StickOuterBindInvertTooltip}" DockPanel.Dock="Top" HorizontalAlignment="Right" />
                                                 </DockPanel>
+
+                                                <Label Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Content="Stick calibration"
+                                                       HorizontalContentAlignment="Center" Margin="0 4 0 4" />
+
+                                                <Label Content="X Axis offset" Grid.Row="10" Grid.Column="0" />
+                                                <DockPanel Grid.Row="10" Grid.Column="1">
+                                                    <xctk:SByteUpDown d:IsHidden="True" Value="{Binding LeftStickDriftXAxis,UpdateSourceTrigger=LostFocus}" MinWidth="50" Maximum="127" Minimum="-127" Increment="1"
+                                                                       Margin="{StaticResource spaceMargin}" />
+                                                </DockPanel>
+
+                                                <Label Content="Y Axis offset" Grid.Row="11" Grid.Column="0" />
+                                                <DockPanel Grid.Row="11" Grid.Column="1">
+                                                    <xctk:SByteUpDown d:IsHidden="True" Value="{Binding LeftStickDriftYAxis,UpdateSourceTrigger=LostFocus}" MinWidth="50" Maximum="127" Minimum="-127" Increment="1"
+                                                                       Margin="{StaticResource spaceMargin}" />
+                                                </DockPanel>
+                                                <Button Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Content="Automatically recalibrate stick" Click="CalibrateStick_OnClick"
+                                                        Tag="0" />
                                             </Grid>
 
                                             <GroupBox Header="{lex:Loc DeltaAcceleration}" DockPanel.Dock="Top">
@@ -564,11 +580,6 @@
                                     <TabItem Header="{lex:Loc None}"  Visibility="Collapsed" />
                                     <TabItem Header="{lex:Loc Controls}" Visibility="Collapsed">
                                         <DockPanel LastChildFill="False">
-                                            <StackPanel Orientation="Horizontal" DockPanel.Dock="Top" Margin="0 4 0 4">
-                                                <Button Content="Recalibrate stick" Click="CalibrateStick_OnClick"
-                                                        Tag="1" />
-                                            </StackPanel>
-
                                             <StackPanel Orientation="Horizontal" DockPanel.Dock="Top">
                                                 <Label Content="{lex:Loc DeadZoneType}" />
                                                 <ComboBox MinWidth="160" SelectedIndex="{Binding RSDeadTypeIndex,FallbackValue='0'}" VerticalContentAlignment="Center" Margin="10,0,0,0">
@@ -650,6 +661,10 @@
                                                     <RowDefinition Style="{StaticResource gridRowHeight}" />
                                                     <RowDefinition Style="{StaticResource gridRowHeight}" />
                                                     <RowDefinition Style="{StaticResource gridRowHeight}" />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
+                                                    <RowDefinition />
                                                     <RowDefinition />
                                                     <RowDefinition />
                                                 </Grid.RowDefinitions>
@@ -740,6 +755,23 @@
                                                        Margin="{StaticResource spaceMargin}" ToolTip="{lex:Loc StickOuterBindDeadTooltip}"  DockPanel.Dock="Top" />
                                                     <CheckBox Content="Invert" IsChecked="{Binding RSOuterBindInvert}" ToolTip="{lex:Loc StickOuterBindInvertTooltip}" DockPanel.Dock="Top" HorizontalAlignment="Right" />
                                                 </DockPanel>
+
+                                                <Label Grid.Row="9" Grid.Column="0" Grid.ColumnSpan="2" Content="Stick calibration"
+                                                       HorizontalContentAlignment="Center" Margin="0 4 0 4" />
+
+                                                <Label Content="X Axis offset" Grid.Row="10" Grid.Column="0" />
+                                                <DockPanel Grid.Row="10" Grid.Column="1">
+                                                    <xctk:SByteUpDown d:IsHidden="True" Value="{Binding RightStickDriftXAxis,UpdateSourceTrigger=LostFocus}" MinWidth="50" Maximum="127" Minimum="-127" Increment="1"
+                                                                      Margin="{StaticResource spaceMargin}" />
+                                                </DockPanel>
+
+                                                <Label Content="Y Axis offset" Grid.Row="11" Grid.Column="0" />
+                                                <DockPanel Grid.Row="11" Grid.Column="1">
+                                                    <xctk:SByteUpDown d:IsHidden="True" Value="{Binding RightStickDriftYAxis,UpdateSourceTrigger=LostFocus}" MinWidth="50" Maximum="127" Minimum="-127" Increment="1"
+                                                                      Margin="{StaticResource spaceMargin}" />
+                                                </DockPanel>
+                                                <Button Grid.Row="12" Grid.Column="0" Grid.ColumnSpan="2" Content="Automatically recalibrate stick" Click="CalibrateStick_OnClick"
+                                                        Tag="1" />
                                             </Grid>
 
                                             <GroupBox Header="{lex:Loc DeltaAcceleration}" DockPanel.Dock="Top">
