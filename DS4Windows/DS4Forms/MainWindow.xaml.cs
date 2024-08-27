@@ -200,6 +200,7 @@ namespace DS4WinWPF.DS4Forms
             // Log exceptions that might occur
             Util.LogAssistBackgroundTask(tempTask);
 
+#if !BETA_VERSION
             tempTask = Task.Delay(100).ContinueWith((t) =>
             {
                 int checkwhen = Global.CheckWhen;
@@ -218,6 +219,7 @@ namespace DS4WinWPF.DS4Forms
                 //    return;
                 //}
             });
+#endif
             Util.LogAssistBackgroundTask(tempTask);
         }
 
