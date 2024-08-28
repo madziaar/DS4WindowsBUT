@@ -28,10 +28,11 @@ public partial class StickCalibrationWindow : Window
     {
         var state = App.rootHub.getDS4State(_device);
 
+        const int neutralState = 128;
         if (_stick == Stick.Left)
         {
-            var xAxisDrift = state.LX - 127;
-            var yAxisDrift = state.LY - 127;
+            var xAxisDrift = state.LX - neutralState;
+            var yAxisDrift = state.LY - neutralState;
             if (xAxisDrift != 0)
             {
                 _profileSettingsVM.LeftStickDriftXAxis = Convert.ToSByte(xAxisDrift);
@@ -46,8 +47,8 @@ public partial class StickCalibrationWindow : Window
 
         if (_stick == Stick.Right)
         {
-            var xAxisDrift = state.RX - 127;
-            var yAxisDrift = state.RY - 127;
+            var xAxisDrift = state.RX - neutralState;
+            var yAxisDrift = state.RY - neutralState;
 
             if (xAxisDrift != 0)
             {
