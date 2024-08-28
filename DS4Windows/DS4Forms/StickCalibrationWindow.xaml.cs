@@ -33,14 +33,10 @@ public partial class StickCalibrationWindow : Window
         {
             var xAxisDrift = state.LX - neutralState;
             var yAxisDrift = state.LY - neutralState;
-            if (xAxisDrift != 0)
-            {
-                _profileSettingsVM.LeftStickDriftXAxis = Convert.ToSByte(xAxisDrift);
-            }
-            if (yAxisDrift != 0)
-            {
-                _profileSettingsVM.LeftStickDriftYAxis = Convert.ToSByte(yAxisDrift);
-            }
+
+            _profileSettingsVM.LeftStickDriftXAxis = Convert.ToSByte(xAxisDrift);
+            _profileSettingsVM.LeftStickDriftYAxis = Convert.ToSByte(yAxisDrift);
+
             MessageBox.Show($"Detected drift:\nX axis: {xAxisDrift}, Y axis: {yAxisDrift}",
                 "DS4Windows", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -50,15 +46,8 @@ public partial class StickCalibrationWindow : Window
             var xAxisDrift = state.RX - neutralState;
             var yAxisDrift = state.RY - neutralState;
 
-            if (xAxisDrift != 0)
-            {
-                _profileSettingsVM.RightStickDriftXAxis = Convert.ToSByte(xAxisDrift);
-            }
-
-            if (yAxisDrift != 0)
-            {
-                _profileSettingsVM.RightStickDriftYAxis = Convert.ToSByte(yAxisDrift);
-            }
+            _profileSettingsVM.RightStickDriftXAxis = Convert.ToSByte(xAxisDrift);
+            _profileSettingsVM.RightStickDriftYAxis = Convert.ToSByte(yAxisDrift);
 
             MessageBox.Show($"Detected drift:\nX axis: {xAxisDrift}, Y axis: {yAxisDrift}",
                 "DS4Windows", MessageBoxButton.OK, MessageBoxImage.Information);
