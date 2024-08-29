@@ -49,10 +49,11 @@ os.rename(target_dir, renamed_dir)
 # create a zip
 arch = target_dir.parents[1].name
 zip_name = f"DS4Windows_{version}_{arch}"
-zip_dir = shutil.make_archive(zip_name, "zip", target_dir.parent)
-
-# move the zip to the build directory
 target_zip_path = target_dir.parent / f"{zip_name}.zip"
 if target_zip_path.exists():
     os.remove(target_zip_path)
+
+zip_dir = shutil.make_archive(zip_name, "zip", target_dir.parent)
+
+# move the zip to the build directory
 shutil.move(zip_dir, target_zip_path)
