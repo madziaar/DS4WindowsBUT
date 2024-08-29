@@ -461,14 +461,7 @@ namespace DS4WinWPF.DS4Forms.ViewModels
             get => Global.DebouncingMs[device];
             set
             {
-                if (Global.DebouncingMs[device] != value)
-                {
-                    HasDebouncingMsChanged = true;
-                }
-                else
-                {
-                    HasDebouncingMsChanged = false;
-                }
+                HasDebouncingMsChanged = Global.DebouncingMs[device] != value;
                 Global.DebouncingMs[device] = value;
                 DebouncingMsChanged?.Invoke(this, EventArgs.Empty);
             }
