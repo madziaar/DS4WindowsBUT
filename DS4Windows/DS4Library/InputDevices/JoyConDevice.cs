@@ -662,15 +662,7 @@ namespace DS4Windows.InputDevices
 
             unchecked
             {
-                var debouncer = SetupDebouncer();
-                debouncer.AddDebouncer(nameof(DS4State.Capture));
-                debouncer.AddDebouncer(nameof(DS4State.DpadUp));
-                debouncer.AddDebouncer(nameof(DS4State.DpadDown));
-                debouncer.AddDebouncer(nameof(DS4State.DpadLeft));
-                debouncer.AddDebouncer(nameof(DS4State.DpadRight));
-                debouncer.AddDebouncer(nameof(DS4State.SideL));
-                debouncer.AddDebouncer(nameof(DS4State.SideR));
-
+                Debouncer = SetupDebouncer();
                 firstActive = DateTime.UtcNow;
                 NativeMethods.HidD_SetNumInputBuffers(hDevice.safeReadHandle.DangerousGetHandle(), 3);
                 Queue<long> latencyQueue = new Queue<long>(21); // Set capacity at max + 1 to avoid any resizing
@@ -837,43 +829,26 @@ namespace DS4Windows.InputDevices
                     if (sideType == JoyConSide.Left)
                     {
                         tempByte = inputReportBuffer[4];
-                        var share = (tempByte & 0x01) != 0;
-                        cState.Share = debouncer.ProcessInput(nameof(DS4State.Share), share, curtime);
+                        cState.Share = (tempByte & 0x01) != 0;
+                        cState.L3 = (tempByte & 0x08) != 0;
 
-                        var l3 = (tempByte & 0x08) != 0;
-                        cState.L3 = debouncer.ProcessInput(nameof(DS4State.L3), l3, curtime);
                         // Capture Button
                         //cState.PS = (tempByte & 0x20) != 0;
-                        var capture = (tempByte & 0x20) != 0;
-                        cState.Capture = debouncer.ProcessInput(nameof(DS4State.Capture), capture, curtime);
+                        cState.Capture = (tempByte & 0x20) != 0;
 
                         tempByte = inputReportBuffer[5];
-                        var dpadUp = (tempByte & 0x02) != 0;
-                        cState.DpadUp = debouncer.ProcessInput(nameof(DS4State.DpadUp), dpadUp, curtime);
-
-                        var dpadDown = (tempByte & 0x01) != 0;
-                        cState.DpadDown = debouncer.ProcessInput(nameof(DS4State.DpadDown), dpadDown, curtime);
-
-                        var dpadLeft = (tempByte & 0x08) != 0;
-                        cState.DpadLeft = debouncer.ProcessInput(nameof(DS4State.DpadLeft), dpadLeft, curtime);
-
-                        var dpadRight = (tempByte & 0x04) != 0;
-                        cState.DpadRight = debouncer.ProcessInput(nameof(DS4State.DpadRight), dpadRight, curtime);
-
-                        var l1 = (tempByte & 0x40) != 0;
-                        cState.L1 = debouncer.ProcessInput(nameof(DS4State.L1), l1, curtime);
-
-                        var l2Btn = (tempByte & 0x80) != 0;
-                        cState.L2Btn = debouncer.ProcessInput(nameof(DS4State.L2Btn), l2Btn, curtime);
+                        cState.DpadUp = (tempByte & 0x02) != 0;
+                        cState.DpadDown = (tempByte & 0x01) != 0;
+                        cState.DpadLeft = (tempByte & 0x08) != 0;
+                        cState.DpadRight = (tempByte & 0x04) != 0;
+                        cState.L1 = (tempByte & 0x40) != 0;
+                        cState.L2Btn = (tempByte & 0x80) != 0;
 
                         cState.L2 = (byte)(cState.L2Btn ? 255 : 0);
                         cState.L2Raw = cState.L2;
 
-                        var sideL = (tempByte & 0x20) != 0;
-                        cState.SideL = debouncer.ProcessInput(nameof(DS4State.SideL), sideL, curtime);
-
-                        var sideR = (tempByte & 0x10) != 0;
-                        cState.SideR = debouncer.ProcessInput(nameof(DS4State.SideR), sideR, curtime);
+                        cState.SideL = (tempByte & 0x20) != 0;
+                        cState.SideR = (tempByte & 0x10) != 0;
 
                         stick_raw[0] = inputReportBuffer[6];
                         stick_raw[1] = inputReportBuffer[7];
@@ -920,41 +895,23 @@ namespace DS4Windows.InputDevices
                     else if (sideType == JoyConSide.Right)
                     {
                         tempByte = inputReportBuffer[3];
-                        var circle = (tempByte & 0x08) != 0;
-                        cState.Circle = debouncer.ProcessInput(nameof(DS4State.Circle), circle, curtime);
+                        cState.Circle = (tempByte & 0x08) != 0;
+                        cState.Cross = (tempByte & 0x04) != 0;
+                        cState.Triangle = (tempByte & 0x02) != 0;
+                        cState.Square = (tempByte & 0x01) != 0;
+                        cState.R1 = (tempByte & 0x40) != 0;
 
-                        var cross = (tempByte & 0x04) != 0;
-                        cState.Cross = debouncer.ProcessInput(nameof(DS4State.Cross), cross, curtime);
-
-                        var triangle = (tempByte & 0x02) != 0;
-                        cState.Triangle = debouncer.ProcessInput(nameof(DS4State.Triangle), triangle, curtime);
-
-                        var square = (tempByte & 0x01) != 0;
-                        cState.Square = debouncer.ProcessInput(nameof(DS4State.Square), square, curtime);
-
-                        var r1 = (tempByte & 0x40) != 0;
-                        cState.R1 = debouncer.ProcessInput(nameof(DS4State.R1), r1, curtime);
-
-                        var r2Btn = (tempByte & 0x80) != 0;
-                        cState.R2Btn = debouncer.ProcessInput(nameof(DS4State.R2Btn), r2Btn, curtime);
+                        cState.R2Btn = (tempByte & 0x80) != 0;
                         cState.R2 = (byte)(cState.R2Btn ? 255 : 0);
                         cState.R2Raw = cState.R2;
 
-                        var sideL = (tempByte & 0x20) != 0;
-                        cState.SideL = debouncer.ProcessInput(nameof(DS4State.SideL), sideL, curtime);
-
-                        var sideR = (tempByte & 0x10) != 0;
-                        cState.SideR = debouncer.ProcessInput(nameof(DS4State.SideR), sideR, curtime);
+                        cState.SideL = (tempByte & 0x20) != 0;
+                        cState.SideR = (tempByte & 0x10) != 0;
 
                         tempByte = inputReportBuffer[4];
-                        var options = (tempByte & 0x02) != 0;
-                        cState.Options = debouncer.ProcessInput(nameof(DS4State.Options), options, curtime);
-
-                        var r3 = (tempByte & 0x04) != 0;
-                        cState.R3 = debouncer.ProcessInput(nameof(DS4State.R3), r3, curtime);
-
-                        var ps = (tempByte & 0x10) != 0;
-                        cState.PS = debouncer.ProcessInput(nameof(DS4State.PS), ps, curtime);
+                        cState.Options = (tempByte & 0x02) != 0;
+                        cState.R3 = (tempByte & 0x04) != 0;
+                        cState.PS = (tempByte & 0x10) != 0;
 
                         stick_raw2[0] = inputReportBuffer[9];
                         stick_raw2[1] = inputReportBuffer[10];

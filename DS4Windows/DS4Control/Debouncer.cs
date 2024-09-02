@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using DS4Windows;
 
-namespace DS4Windows;
+namespace DS4WinWPF.DS4Control;
 
 public class Debouncer(TimeSpan duration)
 {
@@ -13,11 +13,21 @@ public class Debouncer(TimeSpan duration)
         _debouncers[name] = new DebouncerInstance(duration);
     }
 
-    public bool ProcessInput(string name, bool input, long timestamp)
+    public DS4State ProcessInput(DS4State cState)
     {
-        if (duration.TotalMilliseconds == 0) return input;
+        if (duration.TotalMilliseconds == 0) return cState;
 
-        return _debouncers[name].ProcessInput(input, timestamp);
+        DS4State modifiedState = new();
+        cState.CopyTo(modifiedState);
+        foreach (var key in _debouncers.Keys)
+        {
+            var field = typeof(DS4State).GetField(key)!;
+            var current = (bool)field.GetValue(modifiedState)!;
+            var debounced = _debouncers[key].ProcessInput(current, cState.ReportTimeStamp);
+            field.SetValue(modifiedState, debounced);
+        }
+
+        return modifiedState;
     }
 
     public void SetDuration(TimeSpan newDuration)
@@ -32,7 +42,7 @@ public class Debouncer(TimeSpan duration)
     {
         private bool _previousState;
         private bool _currentlyDebouncing;
-        private long _debounceStartTime;
+        private DateTime _debounceStartTime;
 
         public TimeSpan Duration { get; set; } = duration;
 
@@ -42,8 +52,9 @@ public class Debouncer(TimeSpan duration)
         /// <param name="input"><c>bool</c> indicating the state of the button</param>
         /// <param name="timestamp">Current timestamp in <c>DateTime.Ticks</c></param>
         /// <returns>Processed input with debouncing applied</returns>
-        public bool ProcessInput(bool input, long timestamp)
+        public bool ProcessInput(bool input, DateTime timestamp)
         {
+            Console.WriteLine("processing");
             if (_currentlyDebouncing)
             {
                 return Debounce(input, timestamp);
@@ -59,7 +70,7 @@ public class Debouncer(TimeSpan duration)
             return input;
         }
 
-        private void StartDebouncing(bool input, long timestamp)
+        private void StartDebouncing(bool input, DateTime timestamp)
         {
             _currentlyDebouncing = true;
             _debounceStartTime = timestamp;
@@ -71,10 +82,12 @@ public class Debouncer(TimeSpan duration)
             _currentlyDebouncing = false;
         }
 
-        private bool Debounce(bool reading, long timestamp)
+        private bool Debounce(bool reading, DateTime timestamp)
         {
+
             // if the duration hasn't been reached yet, we return true as if the button was pressed all this time
-            if (timestamp - _debounceStartTime < Duration.TotalMilliseconds * TimeSpan.TicksPerMillisecond) return true;
+            var span = timestamp - _debounceStartTime;
+            if (span.TotalMilliseconds < Duration.TotalMilliseconds) return true;
 
             StopDebouncing();
             return reading;

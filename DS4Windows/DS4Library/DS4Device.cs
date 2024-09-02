@@ -27,6 +27,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Drawing;
 
+using DS4WinWPF.DS4Control;
+
 namespace DS4Windows
 {
     public struct DS4Color : IEquatable<DS4Color>
@@ -222,6 +224,11 @@ namespace DS4Windows
         protected bool charging;
         protected bool readyQuickChargeDisconnect;
         protected int warnInterval = WARN_INTERVAL_USB;
+
+        public Debouncer Debouncer
+        {
+            get; protected set;
+        }
         public int getWarnInterval()
         {
             return warnInterval;
@@ -1018,8 +1025,7 @@ namespace DS4Windows
         {
             unchecked
             {
-                var debouncer = SetupDebouncer();
-
+                Debouncer = SetupDebouncer();
                 firstActive = DateTime.UtcNow;
                 NativeMethods.HidD_SetNumInputBuffers(hDevice.safeReadHandle.DangerousGetHandle(), 3);
                 Queue<long> latencyQueue = new Queue<long>(21); // Set capacity at max + 1 to avoid any resizing
@@ -1217,23 +1223,15 @@ namespace DS4Windows
                     cState.R2Raw = cState.R2;
 
                     tempByte = inputReport[5];
-                    var triangle = (tempByte & (1 << 7)) != 0;
-                    cState.Triangle = debouncer.ProcessInput(nameof(DS4State.Triangle), triangle, curtime);
-
-                    var circle = (tempByte & (1 << 6)) != 0;
-                    cState.Circle = debouncer.ProcessInput(nameof(DS4State.Circle), circle, curtime);
-
-                    var cross = (tempByte & (1 << 5)) != 0;
-                    cState.Cross = debouncer.ProcessInput(nameof(DS4State.Cross), cross, curtime);
-
-                    var square = (tempByte & (1 << 4)) != 0;
-                    cState.Square = debouncer.ProcessInput(nameof(DS4State.Square), square, curtime);
+                    cState.Triangle = (tempByte & (1 << 7)) != 0;
+                    cState.Circle = (tempByte & (1 << 6)) != 0;
+                    cState.Cross = (tempByte & (1 << 5)) != 0;
+                    cState.Square = (tempByte & (1 << 4)) != 0;
 
                     // First 4 bits denote dpad state. Clock representation
                     // with 8 meaning centered and 0 meaning DpadUp.
                     byte dpad_state = (byte)(tempByte & 0x0F);
 
-                    // TODO add debouncer for d-pad
                     switch (dpad_state)
                     {
                         case 0: cState.DpadUp = true; cState.DpadDown = false; cState.DpadLeft = false; cState.DpadRight = false; break;
@@ -1249,36 +1247,18 @@ namespace DS4Windows
                     }
 
                     tempByte = inputReport[6];
-                    var r3 = (tempByte & (1 << 7)) != 0;
-                    cState.R3 = debouncer.ProcessInput(nameof(DS4State.R3), r3, curtime);
-
-                    var l3 = (tempByte & (1 << 6)) != 0;
-                    cState.L3 = debouncer.ProcessInput(nameof(DS4State.L3), l3, curtime);
-
-                    var options = (tempByte & (1 << 5)) != 0;
-                    cState.Options = debouncer.ProcessInput(nameof(DS4State.Options), options, curtime);
-
-                    var share = (tempByte & (1 << 4)) != 0;
-                    cState.Share = debouncer.ProcessInput(nameof(DS4State.Share), share, curtime);
-
-                    var r2Btn = (inputReport[6] & (1 << 3)) != 0;
-                    cState.R2Btn = debouncer.ProcessInput(nameof(DS4State.R2Btn), r2Btn, curtime);
-
-                    var l2Btn = (inputReport[6] & (1 << 2)) != 0;
-                    cState.L2Btn = debouncer.ProcessInput(nameof(DS4State.L2Btn), l2Btn, curtime);
-
-                    var r1 = (tempByte & (1 << 1)) != 0;
-                    cState.R1 = debouncer.ProcessInput(nameof(DS4State.R1), r1, curtime);
-
-                    var l1 = (tempByte & (1 << 0)) != 0;
-                    cState.L1 = debouncer.ProcessInput(nameof(DS4State.L1), l1, curtime);
+                    cState.R3 = (tempByte & (1 << 7)) != 0;
+                    cState.L3 = (tempByte & (1 << 6)) != 0;
+                    cState.Options = (tempByte & (1 << 5)) != 0;
+                    cState.Share = (tempByte & (1 << 4)) != 0;
+                    cState.R2Btn = (inputReport[6] & (1 << 3)) != 0;
+                    cState.L2Btn = (inputReport[6] & (1 << 2)) != 0;
+                    cState.R1 = (tempByte & (1 << 1)) != 0;
+                    cState.L1 = (tempByte & (1 << 0)) != 0;
 
                     tempByte = inputReport[7];
-                    var ps = (tempByte & (1 << 0)) != 0;
-                    cState.PS = debouncer.ProcessInput(nameof(DS4State.PS), ps, curtime);
-
-                    var touchButton = (tempByte & 0x02) != 0;
-                    cState.TouchButton = debouncer.ProcessInput(nameof(DS4State.TouchButton), touchButton, curtime);
+                    cState.PS = (tempByte & (1 << 0)) != 0;
+                    cState.TouchButton = (tempByte & 0x02) != 0;
 
                     cState.OutputTouchButton = cState.TouchButton;
                     cState.FrameCounter = (byte)(tempByte >> 2);
@@ -1561,6 +1541,13 @@ namespace DS4Windows
             debouncer.AddDebouncer(nameof(DS4State.L1));
             debouncer.AddDebouncer(nameof(DS4State.PS));
             debouncer.AddDebouncer(nameof(DS4State.TouchButton));
+            debouncer.AddDebouncer(nameof(DS4State.Capture));
+            debouncer.AddDebouncer(nameof(DS4State.SideL));
+            debouncer.AddDebouncer(nameof(DS4State.SideR));
+            debouncer.AddDebouncer(nameof(DS4State.DpadUp));
+            debouncer.AddDebouncer(nameof(DS4State.DpadDown));
+            debouncer.AddDebouncer(nameof(DS4State.DpadLeft));
+            debouncer.AddDebouncer(nameof(DS4State.DpadRight));
             Global.DebouncingMsChanged += (_, _) =>
             {
                 debouncer.SetDuration(TimeSpan.FromMilliseconds(Global.DebouncingMs[deviceSlotNumber]));

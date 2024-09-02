@@ -2705,6 +2705,8 @@ namespace DS4Windows
                     CheckForTouchToggle(ind, cState, pState);
                 }
 
+                cState = device.Debouncer.ProcessInput(cState);
+
                 cState = Mapping.SetCurveAndDeadzone(ind, cState, TempState[ind]);
 
                 if (!recordingMacro && (useTempProfile[ind] ||

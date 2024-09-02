@@ -107,12 +107,7 @@ namespace DS4Windows.InputDevices
         {
             unchecked
             {
-                var debouncer = SetupDebouncer();
-                debouncer.AddDebouncer(nameof(DS4State.DpadUp));
-                debouncer.AddDebouncer(nameof(DS4State.DpadDown));
-                debouncer.AddDebouncer(nameof(DS4State.DpadLeft));
-                debouncer.AddDebouncer(nameof(DS4State.DpadRight));
-
+                Debouncer = SetupDebouncer();
                 firstActive = DateTime.UtcNow;
                 NativeMethods.HidD_SetNumInputBuffers(hDevice.safeReadHandle.DangerousGetHandle(), 3);
                 Queue<long> latencyQueue = new Queue<long>(21); // Set capacity at max + 1 to avoid any resizing
@@ -193,59 +188,28 @@ namespace DS4Windows.InputDevices
                     cState.PacketCounter = pState.PacketCounter + 1;
                     cState.ReportTimeStamp = utcNow;
 
-                    var share = (featureReport[2 + reportOffset] & 0x01) > 0;
-                    cState.Share = debouncer.ProcessInput(nameof(DS4State.Share), share, curtime);
-
-                    var l3 = (featureReport[2 + reportOffset] & 0x02) > 0;
-                    cState.L3 = debouncer.ProcessInput(nameof(DS4State.L3), l3, curtime);
-
-                    var r3 = (featureReport[2 + reportOffset] & 0x04) > 0;
-                    cState.R3 = debouncer.ProcessInput(nameof(DS4State.R3), r3, curtime);
-
-                    var options = (featureReport[2 + reportOffset] & 0x08) > 0;
-                    cState.Options = debouncer.ProcessInput(nameof(DS4State.Options), options, curtime);
-
-                    var dpadUp = ((featureReport[2 + reportOffset] & 0x10) > 0) && featureReport[14 + reportOffset] > 0;
-                    cState.DpadUp = debouncer.ProcessInput(nameof(DS4State.DpadUp), dpadUp, curtime);
-
-                    var dpadRight = ((featureReport[2 + reportOffset] & 0x20) > 0) && featureReport[15 + reportOffset] > 0;
-                    cState.DpadRight = debouncer.ProcessInput(nameof(DS4State.DpadRight), dpadRight, curtime);
-
-                    var dpadDown = ((featureReport[2 + reportOffset] & 0x40) > 0) && featureReport[16 + reportOffset] > 0;
-                    cState.DpadDown = debouncer.ProcessInput(nameof(DS4State.DpadDown), dpadDown, curtime);
-
-                    var dpadLeft = ((featureReport[2 + reportOffset] & 0x80) > 0) && featureReport[17 + reportOffset] > 0;
-                    cState.DpadLeft = debouncer.ProcessInput(nameof(DS4State.DpadLeft), dpadLeft, curtime);
+                    cState.Share = (featureReport[2 + reportOffset] & 0x01) > 0;
+                    cState.L3 = (featureReport[2 + reportOffset] & 0x02) > 0;
+                    cState.R3 = (featureReport[2 + reportOffset] & 0x04) > 0;
+                    cState.Options = (featureReport[2 + reportOffset] & 0x08) > 0;
+                    cState.DpadUp = ((featureReport[2 + reportOffset] & 0x10) > 0) && featureReport[14 + reportOffset] > 0;
+                    cState.DpadRight = ((featureReport[2 + reportOffset] & 0x20) > 0) && featureReport[15 + reportOffset] > 0;
+                    cState.DpadDown = ((featureReport[2 + reportOffset] & 0x40) > 0) && featureReport[16 + reportOffset] > 0;
+                    cState.DpadLeft = ((featureReport[2 + reportOffset] & 0x80) > 0) && featureReport[17 + reportOffset] > 0;
 
                     cState.L2 = ((featureReport[3 + reportOffset] & 0x01) > 0) ? featureReport[18 + reportOffset] : (byte)0x00;
                     cState.R2 = ((featureReport[3 + reportOffset] & 0x02) > 0) ? featureReport[19 + reportOffset] : (byte)0x00;
 
-                    var l1 = ((featureReport[3 + reportOffset] & 0x04) > 0) && featureReport[20 + reportOffset] > 0;
-                    cState.L1 = debouncer.ProcessInput(nameof(DS4State.L1), l1, curtime);
+                    cState.L1 = ((featureReport[3 + reportOffset] & 0x04) > 0) && featureReport[20 + reportOffset] > 0;
+                    cState.R1 = ((featureReport[3 + reportOffset] & 0x08) > 0) && featureReport[21 + reportOffset] > 0;
+                    cState.Triangle = ((featureReport[3 + reportOffset] & 0x10) > 0) && featureReport[22 + reportOffset] > 0;
+                    cState.Circle = ((featureReport[3 + reportOffset] & 0x20) > 0) && featureReport[23 + reportOffset] > 0;
+                    cState.Cross = ((featureReport[3 + reportOffset] & 0x40) > 0) && featureReport[24 + reportOffset] > 0;
+                    cState.Square = ((featureReport[3 + reportOffset] & 0x80) > 0) && featureReport[25 + reportOffset] > 0;
+                    cState.PS = (featureReport[4 + reportOffset] & 0x01) > 0;
 
-                    var r1 = ((featureReport[3 + reportOffset] & 0x08) > 0) && featureReport[21 + reportOffset] > 0;
-                    cState.R1 = debouncer.ProcessInput(nameof(DS4State.R1), r1, curtime);
-
-                    var triangle = ((featureReport[3 + reportOffset] & 0x10) > 0) && featureReport[22 + reportOffset] > 0;
-                    cState.Triangle = debouncer.ProcessInput(nameof(DS4State.Triangle), triangle, curtime);
-
-                    var circle = ((featureReport[3 + reportOffset] & 0x20) > 0) && featureReport[23 + reportOffset] > 0;
-                    cState.Circle = debouncer.ProcessInput(nameof(DS4State.Circle), circle, curtime);
-
-                    var cross = ((featureReport[3 + reportOffset] & 0x40) > 0) && featureReport[24 + reportOffset] > 0;
-                    cState.Cross = debouncer.ProcessInput(nameof(DS4State.Cross), cross, curtime);
-
-                    var square = ((featureReport[3 + reportOffset] & 0x80) > 0) && featureReport[25 + reportOffset] > 0;
-                    cState.Square = debouncer.ProcessInput(nameof(DS4State.Square), square, curtime);
-
-                    var ps = (featureReport[4 + reportOffset] & 0x01) > 0;
-                    cState.PS = debouncer.ProcessInput(nameof(DS4State.PS), ps, curtime);
-
-                    var l2Btn = cState.L2 > 0;
-                    cState.L2Btn = debouncer.ProcessInput(nameof(DS4State.L2Btn), l2Btn, curtime);
-
-                    var r2Btn = cState.R2 > 0;
-                    cState.R2Btn = debouncer.ProcessInput(nameof(DS4State.R2Btn), r2Btn, curtime);
+                    cState.L2Btn = cState.L2 > 0;
+                    cState.R2Btn = cState.R2 > 0;
 
                     cState.L2Raw = cState.L2;
                     cState.R2Raw = cState.R2;
