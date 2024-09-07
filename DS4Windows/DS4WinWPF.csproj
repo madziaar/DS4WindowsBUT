@@ -375,10 +375,7 @@
   <ItemGroup>
     <Folder Remove="extras\" />
   </ItemGroup>
-<<<<<<< HEAD
-=======
-<!--TODO automate the python lang script-->
->>>>>>> origin/stick-calibration-tool
+  
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="python $(SolutionDir)utils\post-build.py $(TargetDir) $(ProjectDir) $(Version)" />
   </Target>
