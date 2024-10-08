@@ -3183,7 +3183,7 @@ namespace DS4Windows
                     else if (triggerValue != 0 && !triggerData.outputActive)
                     {
                         bool outputActive = triggerData.checkTime +
-                            TimeSpan.FromMilliseconds(outputSettings.hipFireMS) < DateTime.Now;
+                            TimeSpan.FromMilliseconds(outputSettings.hipFireMS) + TimeSpan.FromMilliseconds(Global.DebouncingMs[device]) < DateTime.Now;
                         if (outputActive)
                         {
                             triggerData.outputActive = true;
@@ -3243,7 +3243,7 @@ namespace DS4Windows
                     }
                     else if (triggerValue != 0 && !triggerData.outputActive)
                     {
-                        bool outputActive = triggerData.checkTime + TimeSpan.FromMilliseconds(outputSettings.hipFireMS) < DateTime.Now;
+                        bool outputActive = triggerData.checkTime + TimeSpan.FromMilliseconds(outputSettings.hipFireMS) +  + TimeSpan.FromMilliseconds(Global.DebouncingMs[device]) < DateTime.Now;
                         if (outputActive)
                         {
                             triggerData.outputActive = true;
@@ -4011,7 +4011,7 @@ namespace DS4Windows
                                 if (nowAction[device] >= oldnowAction[device] + TimeSpan.FromSeconds(time))
                                     triggeractivated = true;
                             }
-                            else if (nowAction[device] < DateTime.UtcNow - TimeSpan.FromMilliseconds(100))
+                            else if (nowAction[device] < DateTime.UtcNow - TimeSpan.FromMilliseconds(100) + TimeSpan.FromMilliseconds(Global.DebouncingMs[device]))
                                 oldnowAction[device] = DateTime.UtcNow;
                         }
                         else if (triggerToBeTapped && oldnowKeyAct[device] == DateTime.MinValue)
@@ -4048,7 +4048,7 @@ namespace DS4Windows
                                 }
                             }
                             DateTime now = DateTime.UtcNow;
-                            if (!subtriggeractivated && now <= oldnowKeyAct[device] + TimeSpan.FromMilliseconds(250))
+                            if (!subtriggeractivated && now <= oldnowKeyAct[device] + TimeSpan.FromMilliseconds(250) + TimeSpan.FromMilliseconds(Global.DebouncingMs[device]))
                             {
                                 await Task.Delay(3); //if the button is assigned to the same key use a delay so the key down is the last action, not key up
                                 triggeractivated = true;
@@ -4503,7 +4503,7 @@ namespace DS4Windows
                                 {
                                     // pressed down
                                     action.pastTime = DateTime.UtcNow;
-                                    if (action.pastTime <= action.firstTap + TimeSpan.FromMilliseconds(150) + TimeSpan.FromMilliseconds(DebouncingMs[device]))
+                                    if (action.pastTime <= action.firstTap + TimeSpan.FromMilliseconds(150) + TimeSpan.FromMilliseconds(Global.DebouncingMs[device]))
                                     {
                                         action.tappedOnce = tappedOnce = false;
                                         action.secondtouchbegin = secondtouchbegin = true;
@@ -4528,7 +4528,7 @@ namespace DS4Windows
                                     {
                                         action.firstTouch = firstTouch = false;
                                         //firstTouch = false;
-                                        if (DateTime.UtcNow <= (action.pastTime + TimeSpan.FromMilliseconds(150) + TimeSpan.FromMilliseconds(DebouncingMs[device])) && !tappedOnce)
+                                        if (DateTime.UtcNow <= (action.pastTime + TimeSpan.FromMilliseconds(150)  + TimeSpan.FromMilliseconds(Global.DebouncingMs[device])) && !tappedOnce)
                                         {
                                             action.tappedOnce = tappedOnce = true;
                                             //tappedOnce = true;
@@ -4558,7 +4558,7 @@ namespace DS4Windows
                                         }
                                     }
 
-                                    if ((DateTime.UtcNow - action.TimeofEnd) > TimeSpan.FromMilliseconds(150))
+                                    if ((DateTime.UtcNow - action.TimeofEnd) > TimeSpan.FromMilliseconds(150) + TimeSpan.FromMilliseconds(Global.DebouncingMs[device]))
                                     {
                                         if (macro != "")
                                             PlayMacro(device, macroControl, macro, null, null, DS4Controls.None, DS4KeyType.None);
@@ -4568,7 +4568,7 @@ namespace DS4Windows
                                     }
                                     //if it fails the method resets, and tries again with a new tester value (gives tap a delay so tap and hold can work)
                                 }
-                                else if (firstTouch && (DateTime.UtcNow - action.pastTime) > TimeSpan.FromMilliseconds(500)) //helddown
+                                else if (firstTouch && (DateTime.UtcNow - action.pastTime) > TimeSpan.FromMilliseconds(500) + TimeSpan.FromMilliseconds(Global.DebouncingMs[device])) //helddown
                                 {
                                     if (action.typeID == SpecialAction.ActionTypeId.MultiAction)
                                     {
