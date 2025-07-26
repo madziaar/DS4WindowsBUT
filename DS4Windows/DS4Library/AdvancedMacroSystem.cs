@@ -548,6 +548,43 @@ namespace DS4Windows
             Sequence = sequence;
             Success = success;
         }
+
+        /// <summary>
+        /// Executes a macro by name asynchronously
+        /// </summary>
+        public async Task ExecuteMacroAsync(string macroName)
+        {
+            if (string.IsNullOrEmpty(macroName)) return;
+
+            var macro = registeredMacros.Values.FirstOrDefault(m => m.Name.Equals(macroName, StringComparison.OrdinalIgnoreCase));
+            if (macro != null)
+            {
+                await ExecuteMacro(macro);
+            }
+        }
+
+        /// <summary>
+        /// Processes controller state changes for macro triggers
+        /// </summary>
+        public void ProcessControllerState(DS4State currentState, DS4State previousState)
+        {
+            if (currentState == null) return;
+
+            // Check for macro triggers based on state changes
+            foreach (var macro in registeredMacros.Values.Where(m => m.IsActive))
+            {
+                if (macro.Trigger != null && ShouldTriggerMacro(macro.Trigger, currentState, previousState))
+                {
+                    _ = Task.Run(() => ExecuteMacro(macro));
+                }
+            }
+        }
+
+        private bool ShouldTriggerMacro(MacroTrigger trigger, DS4State currentState, DS4State previousState)
+        {
+            // Simple implementation - can be expanded
+            return trigger.TriggerType == MacroTriggerType.ButtonPress;
+        }
     }
 
     public class MacroErrorEventArgs : EventArgs

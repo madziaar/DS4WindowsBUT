@@ -354,6 +354,35 @@ namespace DS4Windows
                 return Color.FromArgb(255, v, p, q);
         }
 
+        /// <summary>
+        /// Applies lightbar effects based on detected game
+        /// </summary>
+        public void ApplyGameProfile(string gameName)
+        {
+            if (string.IsNullOrEmpty(gameName)) return;
+
+            // Apply game-specific lighting effects
+            // This is a basic implementation - could be expanded based on game type
+            var gameColor = GetGameColor(gameName);
+            ApplyEffect(new LightbarEffect
+            {
+                Type = LightbarEffectType.Solid,
+                Duration = TimeSpan.FromMinutes(5),
+                Loop = true,
+                Priority = 7
+            });
+        }
+
+        private Color GetGameColor(string gameName)
+        {
+            // Simple color mapping based on game name
+            var hash = gameName.GetHashCode();
+            var r = (byte)((hash & 0xFF0000) >> 16);
+            var g = (byte)((hash & 0x00FF00) >> 8);
+            var b = (byte)(hash & 0x0000FF);
+            return Color.FromArgb(255, r, g, b);
+        }
+
         public void Dispose()
         {
             effectTimer?.Dispose();

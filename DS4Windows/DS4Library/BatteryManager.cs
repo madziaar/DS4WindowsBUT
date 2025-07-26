@@ -28,7 +28,8 @@ namespace DS4Windows
         Good,        // 70-89% of original capacity
         Fair,        // 50-69% of original capacity
         Poor,        // 30-49% of original capacity
-        VeryPoor     // <30% of original capacity
+        VeryPoor,    // <30% of original capacity
+        Unknown      // Unable to determine battery health
     }
 
     public class BatteryStats
@@ -58,6 +59,8 @@ namespace DS4Windows
         public event EventHandler<BatteryHealthChangedEventArgs> BatteryHealthChanged;
         public event EventHandler<LowBatteryEventArgs> LowBatteryWarning;
         public event EventHandler<BatteryStatsEventArgs> BatteryStatsUpdated;
+
+        public BatteryStats CurrentStats { get; private set; }
 
         public BatteryManager(DS4Device device)
         {

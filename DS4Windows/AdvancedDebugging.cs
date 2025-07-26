@@ -111,7 +111,7 @@ namespace DS4Windows
         private int maxPerformanceHistory = 2000;
         private string logDirectory;
 
-        public event EventHandler<DebugEventArgs> DebugEventLogged;
+        public event EventHandler<AdvancedDebugEventArgs> DebugEventLogged;
         public event EventHandler<PerformanceSnapshotEventArgs> PerformanceSnapshotTaken;
 
         public bool IsCapturingInput => isCapturingInput;
@@ -221,7 +221,7 @@ namespace DS4Windows
             WriteToLogFile(debugEvent);
 
             // Trigger event
-            DebugEventLogged?.Invoke(this, new DebugEventArgs(debugEvent));
+            DebugEventLogged?.Invoke(this, new AdvancedDebugEventArgs(debugEvent));
         }
 
         private void WriteToLogFile(DebugEvent debugEvent)
@@ -667,11 +667,11 @@ namespace DS4Windows
     }
 
     // Event argument classes
-    public class DebugEventArgs : EventArgs
+    public class AdvancedDebugEventArgs : EventArgs
     {
         public DebugEvent Event { get; }
 
-        public DebugEventArgs(DebugEvent debugEvent)
+        public AdvancedDebugEventArgs(DebugEvent debugEvent)
         {
             Event = debugEvent;
         }

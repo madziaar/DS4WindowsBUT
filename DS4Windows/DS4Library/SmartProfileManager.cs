@@ -86,7 +86,7 @@ namespace DS4Windows
         private readonly System.Timers.Timer processMonitorTimer;
 
         public event EventHandler<ProfileSwitchedEventArgs> ProfileSwitched;
-        public event EventHandler<GameDetectedEventArgs> GameDetected;
+        public event EventHandler<ProfileGameDetectedEventArgs> GameDetected;
         public event EventHandler<ProfileOptimizationEventArgs> ProfileOptimized;
 
         public SmartProfileManager(string profilesDirectory)
@@ -362,8 +362,8 @@ namespace DS4Windows
         {
             try
             {
-                var foregroundWindow = NativeMethods.GetForegroundWindow();
-                NativeMethods.GetWindowThreadProcessId(foregroundWindow, out uint processId);
+                var foregroundWindow = WindowNativeMethods.GetForegroundWindow();
+                WindowNativeMethods.GetWindowThreadProcessId(foregroundWindow, out uint processId);
                 return Process.GetProcessById((int)processId);
             }
             catch
@@ -376,10 +376,10 @@ namespace DS4Windows
         {
             try
             {
-                var foregroundWindow = NativeMethods.GetForegroundWindow();
+                var foregroundWindow = WindowNativeMethods.GetForegroundWindow();
                 const int nChars = 256;
                 var buffer = new System.Text.StringBuilder(nChars);
-                return NativeMethods.GetWindowText(foregroundWindow, buffer, nChars) > 0 ? buffer.ToString() : string.Empty;
+                return WindowNativeMethods.GetWindowText(foregroundWindow, buffer, nChars) > 0 ? buffer.ToString() : string.Empty;
             }
             catch
             {
@@ -538,12 +538,12 @@ namespace DS4Windows
         }
     }
 
-    public class GameDetectedEventArgs : EventArgs
+    public class ProfileGameDetectedEventArgs : EventArgs
     {
         public GameDetectionRule DetectedGame { get; }
         public Process Process { get; }
 
-        public GameDetectedEventArgs(GameDetectionRule detectedGame, Process process)
+        public ProfileGameDetectedEventArgs(GameDetectionRule detectedGame, Process process)
         {
             DetectedGame = detectedGame;
             Process = process;
@@ -563,7 +563,7 @@ namespace DS4Windows
     }
 
     // Native methods for window detection
-    internal static class NativeMethods
+    internal static class WindowNativeMethods
     {
         [System.Runtime.InteropServices.DllImport("user32.dll")]
         internal static extern IntPtr GetForegroundWindow();

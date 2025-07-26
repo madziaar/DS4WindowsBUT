@@ -256,9 +256,12 @@ namespace DS4Windows
         {
             if (device.SixAxis == null) return;
 
+            var currentState = device.getCurrentState();
+            if (currentState?.Motion == null) return;
+
             // Simple noise level calculation (would need more sophisticated analysis in reality)
-            var gyroNoise = Math.Abs(device.SixAxis.angVelYaw) + Math.Abs(device.SixAxis.angVelPitch) + Math.Abs(device.SixAxis.angVelRoll);
-            var accelNoise = Math.Abs(device.SixAxis.accelXG) + Math.Abs(device.SixAxis.accelYG) + Math.Abs(device.SixAxis.accelZG);
+            var gyroNoise = Math.Abs(currentState.Motion.angVelYaw) + Math.Abs(currentState.Motion.angVelPitch) + Math.Abs(currentState.Motion.angVelRoll);
+            var accelNoise = Math.Abs(currentState.Motion.accelXG) + Math.Abs(currentState.Motion.accelYG) + Math.Abs(currentState.Motion.accelZG);
             
             motionData.GyroNoiseLevel = Math.Max(motionData.GyroNoiseLevel, gyroNoise);
             motionData.AccelNoiseLevel = Math.Max(motionData.AccelNoiseLevel, accelNoise);

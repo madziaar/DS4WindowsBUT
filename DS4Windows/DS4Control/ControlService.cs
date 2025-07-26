@@ -282,9 +282,13 @@ namespace DS4Windows
         {
             oscCallback = delegate (OscPacket packet)
             {
+                OscMessage messageReceived = null;
+                string[] command = null;
+                int stateInd = -1;
+
                 try
                 {
-                    var messageReceived = (OscMessage)packet;
+                    messageReceived = (OscMessage)packet;
 
                     // If typecast fails, exit
                     if (messageReceived == null)
@@ -299,7 +303,6 @@ namespace DS4Windows
                         return;
                     }
 
-                    string[] command = null;
                     try
                     {
                         command = messageReceived.Address.Split("/");
@@ -339,7 +342,6 @@ namespace DS4Windows
                         }
                     }
 
-                    int stateInd = -1;
                     if (!int.TryParse(command[2], out stateInd))
                     {
                         LogDebug($"OSC Callback: Could not parse controller index '{command[2]}'", true);
@@ -356,6 +358,7 @@ namespace DS4Windows
                 {
                     AppLogger.LogToGui($"Unexpected error in OSC callback: {ex.Message}", true);
                     LogDebug($"OSC Callback exception: {ex}", true);
+                    return;
                 }
 
                 if (stateInd == -1)
